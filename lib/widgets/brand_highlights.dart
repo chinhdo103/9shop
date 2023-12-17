@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:project_9shop/firebase_service.dart';
+import 'package:project_9shop/services/firebase_service.dart';
 import 'package:project_9shop/widgets/banner_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -49,15 +49,14 @@ class _BrandHighLightsState extends State<BrandHighLights> {
   }
 
   void startAutoPlay() {
-    Timer.periodic(const Duration(seconds: 10), (timer) {
+    Timer.periodic(const Duration(seconds: 60), (timer) {
       if (currentPage < _brandAds.length - 1) {
         currentPage++;
       } else {
         currentPage = 0;
       }
-      // Sử dụng PageController để chuyển đổi trang tự động
       _pageController.animateToPage(currentPage,
-          duration: const Duration(milliseconds: 500), curve: Curves.ease);
+          duration: const Duration(milliseconds: 20), curve: Curves.ease);
     });
   }
 
@@ -111,7 +110,6 @@ class _BrandHighLightsState extends State<BrandHighLights> {
                                     flags: const YoutubePlayerFlags(
                                       mute: true,
                                       loop: true,
-                                      autoPlay: false,
                                       hideThumbnail: true,
                                       hideControls: true,
                                     ),

@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 package="com.example.project_9shop">
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:label="9Shop"
@@ -31,5 +33,9 @@ package="com.example.project_9shop">
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+          
+                <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyCJATqite8Lys_bTF_9j8Yl5NHobsNUgx8"/>
+            
     </application>
 </manifest>
