@@ -16,6 +16,14 @@ class CounterForCard extends StatefulWidget {
 class _CounterForCardState extends State<CounterForCard> {
   User? user = FirebaseAuth.instance.currentUser;
   final CartServices _cart = CartServices();
+  void showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   int _qty = 1;
   String? _docId;
@@ -138,6 +146,8 @@ class _CounterForCardState extends State<CounterForCard> {
                           _updating = true;
                           _qty = _qty + 1;
                         });
+
+                        // Update the cart quantity in Firestore
                         var total = _qty *
                             (widget.document!.data()
                                 as Map<String, dynamic>)['GiaSP'];
@@ -159,14 +169,27 @@ class _CounterForCardState extends State<CounterForCard> {
             stream: getCartData(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               return InkWell(
-                onTap: () {
+                onTap: () async {
                   EasyLoading.show(status: 'Đang thêm vào giỏ hàng...');
-                  _cart.addToCart(widget.document).then((value) {
-                    setState(() {
-                      _exists = true;
+                  int? availableQuantity = (widget.document!.data()
+                      as Map<String, dynamic>)['SoLuong'] as int?;
+                  if (availableQuantity! >= _qty) {
+                    // Quantity is sufficient, proceed to add the product to the cart
+                    await _cart.addToCart(widget.document).then((value) {
+                      setState(() {
+                        _exists = true;
+                      });
+                      EasyLoading.showSuccess(
+                          'Sản phẩm đã được thêm vào giỏ hàng');
                     });
-                    EasyLoading.showSuccess('Đã thêm sản phẩm vào giỏ hàng');
-                  });
+                  } else if (availableQuantity == 0) {
+                    EasyLoading.showError('Sản phẩm hiện đã hết hàng');
+                    EasyLoading.dismiss();
+                  } else {
+                    // Quantity is not enough, show an error message
+                    EasyLoading.showError('Không đủ số lượng sản phẩm');
+                    EasyLoading.dismiss();
+                  }
                 },
                 child: Container(
                   height: 28,

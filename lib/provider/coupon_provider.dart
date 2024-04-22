@@ -33,7 +33,10 @@ class CouponProvider with ChangeNotifier {
   Future<void> getAllCoupons() async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance.collection('MaGiamGia').get();
+          await FirebaseFirestore.instance
+              .collection('MaGiamGia')
+              .where('trangthai', isEqualTo: true)
+              .get();
 
       availableCoupons = querySnapshot.docs.map((doc) => doc.data()).toList();
 

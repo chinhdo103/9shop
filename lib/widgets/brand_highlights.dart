@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:project_9shop/services/firebase_service.dart';
@@ -63,14 +64,14 @@ class _BrandHighLightsState extends State<BrandHighLights> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: const Color(0xFFF4F9CD),
       child: Column(
         children: [
           const SizedBox(
-            height: 18,
+            height: 10,
           ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -78,14 +79,15 @@ class _BrandHighLightsState extends State<BrandHighLights> {
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1,
+                    color: Colors.blue.shade900,
                     fontSize: 20),
               ),
             ),
           ),
           Container(
-            height: 166,
+            height: 300,
             width: MediaQuery.of(context).size.width,
-            color: Colors.white,
+            color: const Color(0xFFF4F9CD),
             child: PageView.builder(
               controller: _pageController,
               itemCount: _brandAds.length,
@@ -102,12 +104,14 @@ class _BrandHighLightsState extends State<BrandHighLights> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(4),
                               child: Container(
-                                height: 100,
-                                color: Colors.deepOrange,
+                                height: 150,
+                                color: Colors.black,
                                 child: YoutubePlayer(
                                   controller: YoutubePlayerController(
                                     initialVideoId: _brandAds[index]['youtube'],
                                     flags: const YoutubePlayerFlags(
+                                      forceHD: true,
+                                      captionLanguage: '',
                                       mute: true,
                                       loop: true,
                                       hideThumbnail: true,
@@ -129,7 +133,7 @@ class _BrandHighLightsState extends State<BrandHighLights> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(4),
                                     child: Container(
-                                      height: 50,
+                                      height: 100,
                                       color: Colors.red,
                                       child: CachedNetworkImage(
                                         imageUrl: _brandAds[index]['image1'],
@@ -155,7 +159,7 @@ class _BrandHighLightsState extends State<BrandHighLights> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(4),
                                     child: Container(
-                                      height: 50,
+                                      height: 100,
                                       color: Colors.red,
                                       child: CachedNetworkImage(
                                         imageUrl: _brandAds[index]['image2'],
@@ -163,7 +167,7 @@ class _BrandHighLightsState extends State<BrandHighLights> {
                                         placeholder: (context, url) =>
                                             GFShimmer(
                                           child: Container(
-                                            height: 50,
+                                            height: 20,
                                             color: Colors.grey.shade400,
                                           ),
                                         ),
@@ -181,11 +185,11 @@ class _BrandHighLightsState extends State<BrandHighLights> {
                     Expanded(
                       flex: 2,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 0, 8, 8),
+                        padding: const EdgeInsets.fromLTRB(4, 0, 8, 40),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4),
                           child: Container(
-                            height: 160,
+                            height: 260,
                             color: Colors.blue,
                             child: CachedNetworkImage(
                               imageUrl: _brandAds[index]['image3'],
@@ -214,9 +218,19 @@ class _BrandHighLightsState extends State<BrandHighLights> {
           ),
           _brandAds.isEmpty
               ? Container()
-              : DotsIndicatorWidget(
-                  scrollPosition: _scrollPosition,
-                  itemList: _brandAds,
+              : DotsIndicator(
+                  position: _scrollPosition,
+                  dotsCount: _brandAds.length,
+                  decorator: DotsDecorator(
+                    activeColor: Colors.blue.shade900,
+                    color: Colors.black,
+                    spacing: const EdgeInsets.all(2),
+                    size: const Size.square(6),
+                    activeSize: const Size(12, 6),
+                    activeShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
                 ),
         ],
       ),

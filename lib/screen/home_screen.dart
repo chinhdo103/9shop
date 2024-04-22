@@ -37,6 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getPrefs() async {
+    // Clear the existing products list
+    products.clear();
+
     FirebaseFirestore.instance
         .collection('SanPham')
         .get()
@@ -54,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       });
     });
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? location = prefs.getString('sonha');
     setState(() {
@@ -67,11 +71,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final locationData = Provider.of<LocationProvider>(context);
 
     return Scaffold(
-        backgroundColor: Colors.blue.shade900,
+        backgroundColor: const Color(0xFFF4F9CD),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(40),
           child: AppBar(
-            backgroundColor: Colors.blue.shade900,
+            backgroundColor: const Color(0xFFF4F9CD),
             elevation: 0,
             centerTitle: true,
             title: TextButton(
@@ -84,24 +88,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     _loading = false;
                   });
                   if (value != null) {
-                    PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                        context,
-                        screen: const MapScreen(),
-                        settings: const RouteSettings(name: MapScreen.id),
-                        pageTransitionAnimation:
-                            PageTransitionAnimation.cupertino);
                   } else {
                     setState(() {
                       _loading = false;
                     });
-                    Text('Không cho phép truy cập');
+                    const Text('Không cho phép truy cập');
                   }
                 });
               },
               child: Flexible(
                 child: Text(
                   _location,
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                  style: TextStyle(
+                      color: Colors.blue.shade900,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -311,7 +312,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     );
                   },
-                  icon: const Icon(IconlyLight.search))
+                  icon: Icon(
+                    IconlyLight.search,
+                    color: Colors.blue.shade900,
+                  ))
             ],
           ),
         ),
@@ -323,7 +327,6 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10),
             BannerWidget(),
             BrandHighLights(),
-            // CategoryWidget(),
             RecentlyAddedProduct(),
             FeaturedProducts(),
             BestSellingProduct(),
@@ -343,75 +346,48 @@ class SearchWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // SizedBox(
-        //   height: 64,
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(8.0),
-        //     child: Column(
-        //       children: [
-        //         // ClipRRect(
-        //         //   borderRadius: BorderRadius.circular(4),
-        //         //   child: const TextField(
-        //         //     decoration: InputDecoration(
-        //         //         filled: true,
-        //         //         fillColor: Colors.white,
-        //         //         border: InputBorder.none,
-        //         //         contentPadding: EdgeInsets.fromLTRB(8, 15, 8, 0),
-        //         //         hintText: 'Tìm kiếm sản phẩm',
-        //         //         hintStyle: TextStyle(color: Colors.grey),
-        //         //         prefixIcon: Icon(
-        //         //           Icons.search,
-        //         //           size: 20,
-        //         //           color: Colors.grey,
-        //         //         )),
-        //         //   ),
-        //         // )
-        //       ],
-        //     ),
-        //   ),
-        // ),
         SizedBox(
           height: 20,
           width: MediaQuery.of(context).size.width,
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     IconlyLight.infoSquare,
                     size: 12,
                     color: Colors.white,
                   ),
                   Text(
                     '100% Chính Hãng',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
+                    style: TextStyle(color: Colors.blue.shade900, fontSize: 12),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     IconlyLight.infoSquare,
                     size: 12,
                     color: Colors.white,
                   ),
                   Text(
                     'Hoàn Trả Trong 48H',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
+                    style: TextStyle(color: Colors.blue.shade900, fontSize: 12),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     IconlyLight.infoSquare,
                     size: 12,
                     color: Colors.white,
                   ),
                   Text(
                     'Giao Hàng Miễn Phí',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
+                    style: TextStyle(color: Colors.blue.shade900, fontSize: 12),
                   ),
                 ],
               )

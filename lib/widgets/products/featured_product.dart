@@ -10,8 +10,11 @@ class FeaturedProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     ProductServices _services = ProductServices();
     return StreamBuilder<QuerySnapshot>(
-      stream:
-          _services.products.where('trangthai', isEqualTo: true).snapshots(),
+      stream: _services.products
+          .where('trangthai', isEqualTo: true)
+          .where('SPnoibat', isEqualTo: true)
+          .limit(10)
+          .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return const Text('Something went wrong');

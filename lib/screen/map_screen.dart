@@ -5,12 +5,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_9shop/provider/location_provider.dart';
 import 'package:project_9shop/screen/login_screen.dart';
 import 'package:project_9shop/screen/main_screen.dart';
+// ignore: library_prefixes
 import 'package:project_9shop/provider/auth_provider.dart' as AuthProviderr;
 import 'package:provider/provider.dart';
 
 class MapScreen extends StatefulWidget {
   static const String id = 'map-screen';
-  const MapScreen({super.key});
+  const MapScreen({Key? key}) : super(key: key);
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -18,6 +19,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   late LatLng currentLocation;
+  // ignore: unused_field
   GoogleMapController? _mapController;
   bool _locating = false;
   bool _loggedIn = false;
@@ -29,20 +31,27 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
   }
 
-  void getCurrentUser() {
-    setState(() {
-      user = FirebaseAuth.instance.currentUser;
-    });
-    if (user != null) {
+  Future<void> getCurrentUser() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
       setState(() {
-        _loggedIn = true;
+        this.user = user;
       });
+
+      if (user != null) {
+        setState(() {
+          _loggedIn = true;
+        });
+      }
+    } catch (e) {
+      return;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final locationData = Provider.of<LocationProvider>(context);
+    // ignore: no_leading_underscores_for_local_identifiers
     final _auth = Provider.of<AuthProviderr.AuthProvider>(context);
 
     setState(() {
@@ -91,7 +100,7 @@ class _MapScreenState extends State<MapScreen> {
             child: Image.asset('assets/images/location.png'),
           ),
         ),
-        Center(
+        const Center(
           child: SpinKitPulse(
             color: Colors.black54,
             size: 100.0,
@@ -159,7 +168,6 @@ class _MapScreenState extends State<MapScreen> {
                             if (_loggedIn == false) {
                               Navigator.pushNamed(context, LoginScreen.id);
                             } else {
-                              print(user?.uid);
                               _auth.updateUser(
                                   id: user?.uid,
                                   sdt: user?.phoneNumber,
@@ -167,7 +175,12 @@ class _MapScreenState extends State<MapScreen> {
                                   longitude: locationData.longitude,
                                   address: locationData.selectedAdressAll
                                       .toString());
-                              Navigator.pushNamed(context, MainScreen.id);
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MainScreen()),
+                                (route) => false,
+                              );
                             }
                           },
                           child: const Text(

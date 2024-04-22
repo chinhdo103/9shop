@@ -138,7 +138,7 @@ class DotsIndicatorWidget extends StatelessWidget {
             position: scrollPosition,
             dotsCount: itemList.length,
             decorator: DotsDecorator(
-              activeColor: Colors.blue.shade900,
+              activeColor: const Color(0xFFF4F9CD),
               spacing: const EdgeInsets.all(2),
               size: const Size.square(6),
               activeSize: const Size(12, 6),

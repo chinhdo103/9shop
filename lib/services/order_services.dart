@@ -9,4 +9,11 @@ class OrderServices {
     );
     return result;
   }
+
+  updateOrderStatus(documentId, status) {
+    var resutl = orders.doc(documentId).update({
+      'trangthaidh': status,
+    });
+    return resutl;
+  }
 }

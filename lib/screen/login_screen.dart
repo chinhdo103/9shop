@@ -18,6 +18,8 @@ class _LoginScreenState extends State<LoginScreen> {
   var _phonenumberController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    Provider.of<AuthProvider>(context); // Access authProvider
+
     final auth = Provider.of<AuthProvider>(context);
     final locationData = Provider.of<LocationProvider>(context);
 
@@ -31,18 +33,16 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Visibility(
                   visible: auth.error == 'Mã OTP không tồn tại' ? true : false,
-                  child: Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          '${auth.error} Thử lại',
-                          style: TextStyle(color: Colors.red, fontSize: 12),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                      ],
-                    ),
+                  child: Column(
+                    children: [
+                      Text(
+                        '${auth.error} Thử lại',
+                        style: const TextStyle(color: Colors.red, fontSize: 12),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                    ],
                   ),
                 ),
                 const Text(

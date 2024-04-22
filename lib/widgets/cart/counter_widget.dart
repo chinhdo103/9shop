@@ -109,16 +109,36 @@ class _CounterWidgetState extends State<CounterWidget> {
                             _updating = true;
                             _qty = _qty! + 1;
                           });
-                          var total = _qty! *
-                              (widget.document.data()
-                                  as Map<String, dynamic>)['GiaSP'];
-                          _cart
-                              .updateCartQty(widget.docId, _qty, total)
-                              .then((value) {
+
+                          var availableQuantity = (widget.document.data()
+                              as Map<String, dynamic>)['SoLuong'];
+
+                          if (_qty! > availableQuantity) {
+                            // Quantity exceeds available quantity, show an error message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Sản phẩm không còn đủ hàng'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
                             setState(() {
                               _updating = false;
+                              _qty =
+                                  availableQuantity; // Reset to the available quantity
                             });
-                          });
+                          } else {
+                            // Update the cart quantity in Firestore
+                            var total = _qty! *
+                                (widget.document.data()
+                                    as Map<String, dynamic>)['GiaSP'];
+                            _cart
+                                .updateCartQty(widget.docId, _qty, total)
+                                .then((value) {
+                              setState(() {
+                                _updating = false;
+                              });
+                            });
+                          }
                         },
                         child: Container(
                           decoration: BoxDecoration(

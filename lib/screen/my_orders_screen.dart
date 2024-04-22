@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:project_9shop/provider/order_provider.dart';
 import 'package:project_9shop/services/order_services.dart';
@@ -19,20 +21,38 @@ class MyOrdersScreen extends StatefulWidget {
 }
 
 class _MyOrdersScreenState extends State<MyOrdersScreen> {
-  int tag = 1;
+  OrderServices _orderServices = OrderServices();
+
+  int tag = 0;
+
   List<String> options = [
     'Tất cả đơn hàng',
     'Chờ xác nhận',
+    'Đã thanh toán',
     'Đã từ chối',
     'Đã hủy đơn',
     'Đã xác nhận',
-    'Đang lấy hàng',
     'Đang vận chuyển',
-    'Đã giao hàng',
   ];
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting('vi_VN', null); // Initialize the locale data
+    Color getOrderStatusColor(DocumentSnapshot document) {
+      String trangThaiDH =
+          (document.data() as Map<String, dynamic>)['trangthaidh'];
+
+      if (trangThaiDH == 'Đã từ chối') {
+        return Colors.red;
+      } else if (trangThaiDH == 'Đã xác nhận') {
+        return Colors.blueGrey;
+      } else if (trangThaiDH == 'Đã thanh toán') {
+        return Colors.green;
+      } else if (trangThaiDH == 'Đã hủy đơn') {
+        return Colors.deepPurpleAccent;
+      } else {
+        return Colors.orange;
+      }
+    }
 
     OrderServices _orderServices = OrderServices();
     var _orderProvider = Provider.of<OrderProvider>(context);
@@ -42,7 +62,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       appBar: AppBar(
         title: const Text(
           'Đơn hàng của tôi',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
         actions: [
@@ -51,7 +71,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       ),
       body: Column(
         children: [
-          Container(
+          SizedBox(
             height: 56,
             width: MediaQuery.of(context).size.width,
             child: ChipsChoice<int>.single(
@@ -82,6 +102,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                   .where('id', isEqualTo: user!.uid)
                   .where('trangthaidh',
                       isEqualTo: tag > 0 ? _orderProvider.status : null)
+                  .orderBy('timestamp', descending: true)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -120,15 +141,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                 child: Icon(
                                   CupertinoIcons.square_list,
                                   size: 18,
-                                  color: (document.data() as Map<String,
-                                              dynamic>)['trangthaidh'] ==
-                                          'Đã từ chối'
-                                      ? Colors.red
-                                      : (document.data() as Map<String,
-                                                  dynamic>)['trangthaidh'] ==
-                                              'Đã xác nhận'
-                                          ? Colors.blueGrey[400]
-                                          : Colors.orange,
+                                  color: getOrderStatusColor(document),
                                 ),
                               ),
                               title: Text(
@@ -136,15 +149,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                     as Map<String, dynamic>)['trangthaidh'],
                                 style: TextStyle(
                                     fontSize: 12,
-                                    color: (document.data() as Map<String,
-                                                dynamic>)['trangthaidh'] ==
-                                            'Đã từ chối'
-                                        ? Colors.red
-                                        : (document.data() as Map<String,
-                                                    dynamic>)['trangthaidh'] ==
-                                                'Đã xác nhận'
-                                            ? Colors.blueGrey[400]
-                                            : Colors.orange,
+                                    color: getOrderStatusColor(document),
                                     fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
@@ -157,7 +162,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                 children: [
                                   const Text(
                                     'Phương thức thanh toán',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -326,7 +331,70 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                             const Divider(
                               height: 3,
                               color: Colors.grey,
-                            )
+                            ),
+                            Container(
+                              height: 50,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    AbsorbPointer(
+                                      absorbing: (document.data() as Map<String,
+                                              dynamic>)['trangthaidh'] ==
+                                          'Đã hủy đơn',
+                                      child: TextButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStatePropertyAll<Color>(
+                                            (document.data() as Map<String,
+                                                            dynamic>)[
+                                                        'trangthaidh'] ==
+                                                    'Đã hủy đơn'
+                                                ? Colors.grey
+                                                : ((document.data() as Map<
+                                                                String,
+                                                                dynamic>)[
+                                                            'trangthaidh'] ==
+                                                        'Đã xác nhận'
+                                                    ? Colors
+                                                        .grey // Màu của nút khi trạng thái là "Đã xác nhận"
+                                                    : Colors.red),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          if ((document.data() as Map<String,
+                                                  dynamic>)['trangthaidh'] ==
+                                              'Đã xác nhận') {
+                                            // Hiển thị thông báo hoặc thực hiện các hành động khác khi không thể hủy đơn
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    'Không thể hủy đơn khi hệ thống đã xác nhận đơn hàng');
+                                          } else {
+                                            List<dynamic> products =
+                                                (document.data() as Map<String,
+                                                    dynamic>)['SanPham'];
+                                            // Thực hiện hành động khi nhấn nút hủy đơn
+                                            showDialog(
+                                                'Hủy đơn hàng',
+                                                'Đã hủy đơn',
+                                                document.id,
+                                                products);
+                                          }
+                                        },
+                                        child: const Text(
+                                          'Hủy đơn',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Divider(
+                              height: 3,
+                              color: Colors.grey,
+                            ),
                           ],
                         ),
                       );
@@ -339,5 +407,79 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         ],
       ),
     );
+  }
+
+  showDialog(title, status, documentId, products) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: const Text('Xác nhận lại lựa chọn'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                EasyLoading.show(status: 'Đang cập nhật...');
+                if (status == 'Đã xác nhận') {
+                  _orderServices.updateOrderStatus(documentId, status).then(
+                    (value) {
+                      updateProductQuantities(products);
+                      EasyLoading.showSuccess('Cập nhật đơn hàng thành công');
+                    },
+                  );
+                } else {
+                  _orderServices.updateOrderStatus(documentId, status).then(
+                    (value) {
+                      EasyLoading.showSuccess('Cập nhật đơn hàng thành công');
+                    },
+                  );
+                }
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Đồng ý',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Huỷ',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void updateProductQuantities(List<dynamic> products) {
+    // Create a batch for the transaction
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    for (var product in products) {
+      DocumentReference productReference =
+          FirebaseFirestore.instance.collection('SanPham').doc(product['MaSP']);
+
+      // Increment the product quantity in the product collection
+      batch.update(productReference, {
+        'SoLuong': FieldValue.increment(product['SoLuong']),
+      });
+    }
+
+    // Commit the batch write
+    batch.commit().then((_) {}).catchError((error) {
+      print("Error updating product quantities: $error");
+      // Handle error if necessary
+    });
   }
 }

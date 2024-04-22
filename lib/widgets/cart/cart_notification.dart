@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:project_9shop/provider/cart_provider.dart';
 import 'package:project_9shop/screen/cart_screen.dart';
-import 'package:project_9shop/services/cart_service.dart';
 import 'package:provider/provider.dart';
 
 class CartNotification extends StatefulWidget {
@@ -15,10 +14,10 @@ class CartNotification extends StatefulWidget {
 }
 
 class _CartNotificationState extends State<CartNotification> {
-  CartServices _cart = CartServices();
   DocumentSnapshot? document;
   @override
   Widget build(BuildContext context) {
+    // ignore: no_leading_underscores_for_local_identifiers
     final _CartProvider = Provider.of<CartProvider>(context);
     _CartProvider.getCartTotal();
 
@@ -79,8 +78,8 @@ class _CartNotificationState extends State<CartNotification> {
                       pageTransitionAnimation:
                           PageTransitionAnimation.cupertino);
                 },
-                child: Container(
-                  child: const Row(
+                child: const SizedBox(
+                  child: Row(
                     children: [
                       Text(
                         'Xem giỏ hàng',

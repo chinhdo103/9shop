@@ -100,8 +100,11 @@ class ProductCard extends StatelessWidget {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
                                 color: Colors.grey[200]),
-                            child: const Text('1 Cái',
-                                style: TextStyle(
+                            child: Text(
+                                (document.data()
+                                        as Map<String, dynamic>)['DonViSP'] ??
+                                    '',
+                                style: const TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey,
                                     fontWeight: FontWeight.bold)),

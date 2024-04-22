@@ -1,10 +1,8 @@
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project_9shop/screen/accout_screen.dart';
-import 'package:project_9shop/screen/cart_screen.dart';
 import 'package:project_9shop/screen/category_screen.dart';
+import 'package:project_9shop/screen/chatbot/chat_bot_screen.dart';
 import 'package:project_9shop/screen/home_screen.dart';
-import 'package:project_9shop/screen/message_screen.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:project_9shop/screen/my_orders_screen.dart';
 import 'package:project_9shop/screen/profile_screen.dart';
@@ -27,7 +25,6 @@ class _MainScreenState extends State<MainScreen> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     CategoryScreen(),
-    MessageScreen(),
     MyOrdersScreen(),
     ProfileScreen()
   ];
@@ -51,9 +48,37 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: const Padding(
-        padding: EdgeInsets.only(bottom: 56),
-        child: CartNotification(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 56),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FloatingActionButton.extended(
+              backgroundColor: Colors.blue.shade900,
+              elevation: 3,
+              icon: const Icon(
+                Icons.chat,
+                size: 12,
+                color: Colors.white,
+              ),
+              label: const Text(
+                "Hỗ trợ",
+                style: TextStyle(fontSize: 12, color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ChatBotScreen()));
+              },
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            const CartNotification(),
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Center(
@@ -79,12 +104,6 @@ class _MainScreenState extends State<MainScreen> {
                     : IconlyLight.category,
               ),
               label: 'Danh Mục',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                _selectedIndex == 2 ? IconlyBold.chat : IconlyLight.chat,
-              ),
-              label: 'Tin Nhắn',
             ),
             BottomNavigationBarItem(
               icon: Icon(

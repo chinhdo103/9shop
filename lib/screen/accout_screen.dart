@@ -155,9 +155,11 @@ class _AccountScreenState extends State<AccountScreen> {
               if (snapshot.exists) {
                 Map<String, dynamic> userData =
                     snapshot.data() as Map<String, dynamic>;
+                // ignore: unused_local_variable
                 String matk = userData['id'] ?? '';
 
                 // Navigate to EditProfileScreen with user ID
+                // ignore: use_build_context_synchronously
                 Navigator.pushReplacement(
                     context, EditProfileScreen.id as Route<Object?>);
               }
@@ -169,10 +171,12 @@ class _AccountScreenState extends State<AccountScreen> {
             onTap: () {
               auth.error = '';
               FirebaseAuth.instance.signOut().then((value) {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const OnBoardingScreen()));
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const OnBoardingScreen()),
+                  (route) => false,
+                );
               });
             },
             child: colorTitle(Icons.logout, Colors.black, "Đăng xuất")),

@@ -1,12 +1,10 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:project_9shop/provider/auth_provider.dart';
 import 'package:project_9shop/provider/location_provider.dart';
 import 'package:project_9shop/screen/main_screen.dart';
-import 'package:project_9shop/screen/map_screen.dart';
 import 'package:provider/provider.dart';
 
 class OnBoardingScreen extends StatefulWidget {
@@ -30,16 +28,17 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
 
+    // ignore: no_leading_underscores_for_local_identifiers
     bool _validPhoneNumber = false;
+    // ignore: no_leading_underscores_for_local_identifiers
     var _phonenumberController = TextEditingController();
-    final locationData = Provider.of<LocationProvider>(context, listen: false);
 
     void showBottomSheet(context) {
       showModalBottomSheet(
         context: context,
         builder: (context) =>
             StatefulBuilder(builder: (context, StateSetter myState) {
-          return Container(
+          return SizedBox(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -48,14 +47,15 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   Visibility(
                     visible:
                         auth.error == 'Mã OTP không tồn tại' ? true : false,
-                    child: Container(
+                    child: SizedBox(
                       child: Column(
                         children: [
                           Text(
                             '${auth.error} Thử lại',
-                            style: TextStyle(color: Colors.red, fontSize: 12),
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 12),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                         ],

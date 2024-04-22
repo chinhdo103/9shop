@@ -8,15 +8,21 @@ class LocationProvider with ChangeNotifier {
   double? latitude;
   double? longitude;
   bool permissionAllowed = false;
+  // ignore: prefer_typing_uninitialized_variables
   var selectedAdressName;
+  // ignore: prefer_typing_uninitialized_variables
   var selectedAdressAdress;
+  // ignore: prefer_typing_uninitialized_variables
   var selectedSubArea;
+  // ignore: prefer_typing_uninitialized_variables
   var selectedArea;
+  // ignore: prefer_typing_uninitialized_variables
   var selectedAdressAll;
   bool loading = false;
   Future<Position> getCurrentPostion() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+    // ignore: unnecessary_null_comparison
     if (position != null) {
       latitude = position.latitude;
       longitude = position.longitude;
@@ -29,9 +35,7 @@ class LocationProvider with ChangeNotifier {
       selectedAdressAll = placemarks.first;
       permissionAllowed = true;
       notifyListeners();
-    } else {
-      print('không được cho phép');
-    }
+    } else {}
     return position;
   }
 
@@ -49,7 +53,6 @@ class LocationProvider with ChangeNotifier {
     selectedArea = placemarks.first.administrativeArea;
     selectedSubArea = placemarks.first.subAdministrativeArea;
     selectedAdressAll = '$selectedAdressAdress $selectedSubArea $selectedArea';
-    print(selectedAdressAll);
   }
 
   Future<void> savePrefs() async {

@@ -5,7 +5,6 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:project_9shop/models/sub_category_model.dart';
 import 'package:project_9shop/provider/store_provider.dart';
 import 'package:project_9shop/screen/product_list_screen.dart';
-import 'package:project_9shop/widgets/products/product_list.dart';
 import 'package:provider/provider.dart';
 
 class SubCategoryWidget extends StatelessWidget {
@@ -44,8 +43,8 @@ class SubCategoryWidget extends StatelessWidget {
                 _storeProvider.selectedCategory(danhmucphu.tenDanhMucPhu);
                 PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                     context,
-                    screen: ProductListScreen(),
-                    settings: RouteSettings(name: ProductListScreen.id),
+                    screen: const ProductListScreen(),
+                    settings: const RouteSettings(name: ProductListScreen.id),
                     pageTransitionAnimation: PageTransitionAnimation.cupertino);
               },
               child: Column(

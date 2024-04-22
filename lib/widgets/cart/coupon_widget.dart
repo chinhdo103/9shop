@@ -120,7 +120,7 @@ class _CouponWidgetState extends State<CouponWidget> {
                                   borderRadius: BorderRadius.circular(6),
                                   color: Colors.greenAccent.withOpacity(.4)),
                               width: MediaQuery.of(context).size.width - 80,
-                              height: 90,
+                              height: 100,
                               child: Column(
                                 children: [
                                   Padding(
@@ -177,7 +177,7 @@ class _CouponWidgetState extends State<CouponWidget> {
           return CupertinoAlertDialog(
             title: const Text('ÁP DỤNG MÃ GIẢM GIÁ'),
             content: Text(
-                'Mã giảm giá $code $vadility, vui lòng kiểm tra mã nhập hoặc nhập mã khác'),
+                'Mã giảm giá $code $vadility'),
             actions: [
               TextButton(
                   onPressed: () {

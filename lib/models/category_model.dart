@@ -21,8 +21,10 @@ class DanhMuc {
 }
 
 FirebaseService _service = FirebaseService();
-final danhmucCollection =
-    _service.danhmuc.where('trangthai', isEqualTo: true).withConverter<DanhMuc>(
-          fromFirestore: (snapshot, _) => DanhMuc.fromJson(snapshot.data()!),
-          toFirestore: (movie, _) => movie.toJson(),
-        );
+final danhmucCollection = _service.danhmuc
+    .where('trangthai', isEqualTo: true) // Lọc theo trạng thái
+    .orderBy('TenDanhMuc')
+    .withConverter<DanhMuc>(
+      fromFirestore: (snapshot, _) => DanhMuc.fromJson(snapshot.data()!),
+      toFirestore: (danhMuc, _) => danhMuc.toJson(),
+    );

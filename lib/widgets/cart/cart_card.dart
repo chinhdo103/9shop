@@ -44,9 +44,11 @@ class CartCard extends StatelessWidget {
                             maxLines: 2,
                           ),
                         ),
-                        const Text(
-                          '1 Cái',
-                          style: TextStyle(color: Colors.grey),
+                        Text(
+                          (document!.data()
+                                  as Map<String, dynamic>)['DonViSP'] ??
+                              '',
+                          style: const TextStyle(color: Colors.grey),
                         ),
                         const SizedBox(
                           height: 30,

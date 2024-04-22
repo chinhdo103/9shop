@@ -78,7 +78,6 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
       String fileName = 'userImage/${DateTime.now().millisecondsSinceEpoch}';
       var ref = firebase_storage.FirebaseStorage.instance.ref(fileName);
       String? mimeType = mime(basename(fileName)) ?? 'image/jpeg';
-      print('MIME Type: $mimeType');
 
       var metaData = firebase_storage.SettableMetadata(contentType: mimeType);
       firebase_storage.TaskSnapshot uploadSnapshot =
@@ -131,9 +130,9 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
         centerTitle: true,
         title: const Text(
           'Cập nhật thông tin',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       bottomSheet: InkWell(
         onTap: () {
@@ -183,17 +182,18 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                             height: 115,
                             child: image != null
                                 ? Image.file(
-                                    image, // Use Image.file instead of Image.memory
+                                    image,
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.asset(
-                                        'assets/images/9Shop-logo.png',
+                                        'assets/images/1.png',
                                         fit: BoxFit.cover,
                                       );
                                     },
                                   )
                                 : Image.network(
-                                    userDetailsData?['hinhanh'] ?? '',
+                                    userDetailsData?['hinhanh'] ??
+                                        'https://i.pinimg.com/originals/c6/e5/65/c6e56503cfdd87da299f72dc416023d4.jpg',
                                     fit: BoxFit.cover,
                                   ),
                           ),

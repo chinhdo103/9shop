@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FBauth;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:project_9shop/provider/auth_provider.dart';
 import 'package:project_9shop/provider/location_provider.dart';
@@ -10,6 +12,9 @@ import 'package:project_9shop/screen/my_orders_screen.dart';
 import 'package:project_9shop/screen/on_boarding_screen.dart';
 import 'package:project_9shop/screen/prize_wheel.dart';
 import 'package:project_9shop/screen/profile_update_screen.dart';
+import 'package:project_9shop/screen/save_product_screen.dart';
+import 'package:project_9shop/screen/success_screen.dart';
+import 'package:project_9shop/services/product_service.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -20,10 +25,10 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var userDetails = Provider.of<AuthProvider>(context);
     var locationData = Provider.of<LocationProvider>(context);
-
     FBauth.User? user = FBauth.FirebaseAuth.instance.currentUser;
     userDetails.getUserDetails();
     var userDetailsData = userDetails.snapshot?.data() as Map<String, dynamic>?;
+    ProductServices _services = ProductServices();
 
     return Scaffold(
       appBar: AppBar(
@@ -210,10 +215,24 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             const Divider(),
-            const ListTile(
-              leading: Icon(Icons.notifications_none),
-              title: Text('Thông báo'),
-              horizontalTitleGap: 2,
+            InkWell(
+              onTap: () async {
+                List<DocumentSnapshot> favoriteProducts =
+                    await _services.getFavoriteProducts(user!.uid);
+
+                // ignore: use_build_context_synchronously
+                PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                  context,
+                  screen: SaveProductScreen(favoriteProducts: favoriteProducts),
+                  settings: const RouteSettings(name: SaveProductScreen.id),
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
+              },
+              child: const ListTile(
+                leading: Icon(IconlyLight.bag),
+                title: Text('Sản phẩm yêu thích'),
+                horizontalTitleGap: 2,
+              ),
             ),
             const Divider(),
             InkWell(

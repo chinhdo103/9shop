@@ -11,10 +11,15 @@ class BestSellingProduct extends StatelessWidget {
     ProductServices _services = ProductServices();
     return StreamBuilder<QuerySnapshot>(
       //.where('tên cột',isEqualTo:'tên giá trị') = để lọc các giá trị theo  , thêm limittolast(10) giới hạn sp tối đa 10
-      stream:
-          _services.products.where('trangthai', isEqualTo: true).snapshots(),
+      stream: _services.products
+          .where('trangthai', isEqualTo: true)
+          .where('SPbanchay', isEqualTo: true)
+          .limit(10)
+          .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
+          print('ok');
+          print(snapshot.error);
           return const Text('Something went wrong');
         }
 

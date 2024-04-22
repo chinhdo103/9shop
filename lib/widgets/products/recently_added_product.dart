@@ -11,8 +11,13 @@ class RecentlyAddedProduct extends StatelessWidget {
     ProductServices _services = ProductServices();
     return StreamBuilder<QuerySnapshot>(
       //.where('tên cột',isEqualTo:'tên giá trị') = để lọc các giá trị theo - xem 39
-      stream:
-          _services.products.where('trangthai', isEqualTo: true).snapshots(),
+      //.where('tên cột',isEqualTo:'tên giá trị') = để lọc các giá trị theo  , thêm limittolast(10) giới hạn sp tối đa 10
+      stream: _services.products
+          .where('trangthai', isEqualTo: true)
+          .orderBy('ngaytao',
+              descending: true) // Sort by ngàythem in descending order
+          .limit(10)
+          .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return const Text('Something went wrong');
@@ -34,7 +39,7 @@ class RecentlyAddedProduct extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade900,
+                  color: const Color.fromARGB(255, 236, 215, 118),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Center(
@@ -43,12 +48,12 @@ class RecentlyAddedProduct extends StatelessWidget {
                     style: TextStyle(
                       shadows: <Shadow>[
                         Shadow(
-                          offset: Offset(2.0, 2.0),
-                          blurRadius: 3.0,
+                          offset: Offset(1.0, 1.0),
+                          blurRadius: 2,
                           color: Colors.black,
                         )
                       ],
-                      color: Colors.white,
+                      color: Color(0xFFF4F9CD),
                       fontWeight: FontWeight.bold,
                       fontSize: 30,
                     ),

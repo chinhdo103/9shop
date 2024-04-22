@@ -58,7 +58,7 @@ class _CouponAllScreenState extends State<CouponAllScreen> {
                                     ? Colors.grey
                                     : Colors.greenAccent.withOpacity(.4),
                               ),
-                              height: 130,
+                              height: 150,
                               child: Column(
                                 children: [
                                   Padding(

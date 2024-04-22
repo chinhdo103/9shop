@@ -58,7 +58,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   });
                 },
                 child: Container(
-                  height: 70,
+                  height: 90,
                   color: selectedDanhMuc == danhmuc.tenDanhMuc
                       ? Colors.white
                       : Colors.grey.shade300,

@@ -49,7 +49,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
             child: SizedBox(
-              height: 40,
+              height: 60,
               child: Row(
                 children: [
                   Expanded(

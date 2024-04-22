@@ -41,8 +41,12 @@ class _CartListState extends State<CartList> {
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            return CartCard(
-              document: document, // Use the document from the current iteration
+            return Container(
+              height: 130,
+              child: CartCard(
+                document:
+                    document, // Use the document from the current iteration
+              ),
             );
           }).toList(),
         );

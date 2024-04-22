@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:project_9shop/services/cart_service.dart';
@@ -90,15 +89,28 @@ class _AddToCartWidgetState extends State<AddToCartWidget> {
                 docId: _docId,
               )
             : InkWell(
-                onTap: () {
+                onTap: () async {
                   EasyLoading.show(status: 'Đang thêm vào giỏ hàng...');
-                  _cart.addToCart(widget.document).then((value) {
-                    setState(() {
-                      _exits = true;
+                  int? availableQuantity = (widget.document.data()
+                      as Map<String, dynamic>)['SoLuong'] as int?;
+
+                  if (availableQuantity! >= _qty) {
+                    // Quantity is sufficient, proceed to add the product to the cart
+                    await _cart.addToCart(widget.document).then((value) {
+                      setState(() {
+                        _exits = true;
+                      });
+                      EasyLoading.showSuccess(
+                          'Sản phẩm đã được thêm vào giỏ hàng');
                     });
-                    EasyLoading.showSuccess(
-                        'Sản phẩm đã được thêm vào giỏ hàng');
-                  });
+                  } else if (availableQuantity == 0) {
+                    EasyLoading.showError('Sản phẩm hiện đã hết hàng');
+                    EasyLoading.dismiss();
+                  } else {
+                    // Quantity is not enough, show an error message
+                    EasyLoading.showError('Không đủ số lượng sản phẩm');
+                    EasyLoading.dismiss();
+                  }
                 },
                 child: Container(
                   height: 56,

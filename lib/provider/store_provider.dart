@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:project_9shop/services/store_services.dart';
 
 class StoreProvider with ChangeNotifier {
+  // ignore: unused_field
   final StoreServices _storeServices = StoreServices();
   User? user = FirebaseAuth.instance.currentUser;
   DocumentSnapshot? storedetails;

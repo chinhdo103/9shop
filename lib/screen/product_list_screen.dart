@@ -17,9 +17,9 @@ class ProductListScreen extends StatelessWidget {
             SliverAppBar(
               title: Text(
                 _storeProvider.selectedProductCategory ?? 'Default Category',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
-              iconTheme: const IconThemeData(color: Colors.white),
+              iconTheme: const IconThemeData(color: Colors.black),
             )
           ];
         },

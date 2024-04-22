@@ -1,10 +1,10 @@
+// ignore_for_file: unused_field
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:project_9shop/services/firebase_service.dart';
 import 'package:project_9shop/provider/location_provider.dart';
-import 'package:project_9shop/screen/edit_profile_screen.dart';
 import 'package:project_9shop/screen/main_screen.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -12,7 +12,7 @@ class AuthProvider with ChangeNotifier {
   String? smsOtp;
   String? verificationId;
   String error = '';
-  FirebaseService _service = FirebaseService();
+  final FirebaseService _service = FirebaseService();
   bool loading = false;
   LocationProvider locationData = LocationProvider();
   DocumentSnapshot? snapshot;
@@ -20,35 +20,32 @@ class AuthProvider with ChangeNotifier {
     BuildContext? context,
     String? sdt,
   }) async {
-    this.loading = true;
+    loading = true;
     notifyListeners();
 
     // Check for null values in parameters
     if (context != null && sdt != null) {
       // Define verificationCompleted callback
-      final PhoneVerificationCompleted verificationCompleted =
-          (PhoneAuthCredential credential) async {
+      verificationCompleted(PhoneAuthCredential credential) async {
         loading = false;
         notifyListeners();
         await _auth.signInWithCredential(credential);
-      };
+      }
 
       // Define verificationFailed callback
-      final PhoneVerificationFailed verificationFailed =
-          (FirebaseAuthException e) {
-        this.loading = false;
+      verificationFailed(FirebaseAuthException e) {
+        loading = false;
         error = e.toString();
-        print(e.code);
         error = e.toString();
         notifyListeners();
-      };
+      }
 
       // Define smsOtpSend callback
-      final PhoneCodeSent smsOtpSend = (String? verId, int? resendToken) async {
+      smsOtpSend(String? verId, int? resendToken) async {
         verificationId = verId;
         // Call smsOtpDialog
         smsOtpDialog(context, sdt);
-      };
+      }
 
       try {
         // Perform phone number verification
@@ -64,17 +61,8 @@ class AuthProvider with ChangeNotifier {
       } catch (e) {
         error = e.toString();
         notifyListeners();
-        print(e);
       }
-    } else {
-      // Handle the case where one or more variables is null
-      print(
-          'One or more variables (context, sdt, latitude, longitude, address) is null');
-      print('context: $context');
-      print('sdt: $sdt');
-
-      // Additional error handling or fallback logic can be added here
-    }
+    } else {}
   }
 
   String getCurrentUserUid() {
@@ -98,7 +86,7 @@ class AuthProvider with ChangeNotifier {
                 )
               ],
             ),
-            content: Container(
+            content: SizedBox(
               height: 85,
               child: TextField(
                 textAlign: TextAlign.center,
@@ -138,6 +126,7 @@ class AuthProvider with ChangeNotifier {
                       }
 
                       // Inside smsOtpDialog function
+                      // ignore: unnecessary_null_comparison
                       if (user != null) {
                         String docname = user.uid;
 
@@ -152,48 +141,50 @@ class AuthProvider with ChangeNotifier {
                           if (document.exists) {
                             var userData =
                                 document.data() as Map<String, dynamic>;
+                            // ignore: unused_local_variable
                             String matk = userData['id'];
 
                             if (userData['hovaten'] == null ||
                                 userData['hovaten'].isEmpty) {
-                              // 'hovaten' is missing, navigate to update information page
-                              Navigator.of(context).pop();
-                              PersistentNavBarNavigator
-                                  .pushNewScreenWithRouteSettings(context,
-                                      screen: const MainScreen(),
-                                      settings: const RouteSettings(
-                                          name: MainScreen.id),
-                                      pageTransitionAnimation:
-                                          PageTransitionAnimation.cupertino);
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MainScreen()),
+                                (route) => false,
+                              );
                             } else {
                               Navigator.of(context).pop();
-                              PersistentNavBarNavigator
-                                  .pushNewScreenWithRouteSettings(context,
-                                      screen: const MainScreen(),
-                                      settings: const RouteSettings(
-                                          name: MainScreen.id),
-                                      withNavBar: false,
-                                      pageTransitionAnimation:
-                                          PageTransitionAnimation.cupertino);
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MainScreen()),
+                                (route) => false,
+                              );
                             }
                           } else {
                             // Document does not exist
+                            // ignore: avoid_print
                             print('Document does not exist');
                           }
                         }).catchError((error) {
+                          // ignore: avoid_print
                           print('Error getting document: $error');
                         });
                       } else {
+                        // ignore: avoid_print
                         print('Login fails');
                       }
                     } else {
                       // Handle the case where either verificationId or smsOtp is null
+                      // ignore: avoid_print
                       print('verificationId or smsOtp is null');
                     }
                   } catch (e) {
-                    this.error = 'Mã OTP không tồn tại';
+                    error = 'Mã OTP không tồn tại';
                     notifyListeners();
+                    // ignore: avoid_print
                     print(e.toString());
+                    // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                   }
                 },
@@ -210,18 +201,15 @@ class AuthProvider with ChangeNotifier {
       double? longitude,
       double? latitude,
       String? address}) {
-    // Assuming 'TaiKhoanNguoiDung' is the collection name
     CollectionReference taiKhoanCollection =
         FirebaseFirestore.instance.collection('TaiKhoanNguoiDung');
 
-    // Check if the document with the given 'id' already exists
     taiKhoanCollection.doc(id).get().then((DocumentSnapshot document) {
       if (document.exists) {
-        // Document exists, update the 'sdt' field only
         taiKhoanCollection.doc(id).update({
           'sdt': sdt,
         });
-        this.loading = false;
+        loading = false;
         notifyListeners();
       } else {
         // Document does not exist, create a new document with 'id' and 'sdt'
@@ -232,10 +220,11 @@ class AuthProvider with ChangeNotifier {
           'vido': latitude,
           'diachi': address,
         });
-        this.loading = false;
+        loading = false;
         notifyListeners();
       }
     }).catchError((error) {
+      // ignore: avoid_print
       print('Error checking document existence: $error');
     });
   }
@@ -249,10 +238,7 @@ class AuthProvider with ChangeNotifier {
   }) async {
     try {
       // Check if latitude and longitude are not null before creating GeoPoint
-      GeoPoint? geoPoint;
-      if (latitude != null && longitude != null) {
-        geoPoint = GeoPoint(latitude, longitude);
-      }
+      if (latitude != null && longitude != null) {}
 
       // Update user data
       await FirebaseFirestore.instance
@@ -264,9 +250,10 @@ class AuthProvider with ChangeNotifier {
         'vido': latitude,
         'diachi': address,
       });
-      this.loading = false;
+      loading = false;
       notifyListeners();
     } catch (e) {
+      // ignore: avoid_print
       print('Error updating user: $e');
     }
   }
@@ -276,13 +263,8 @@ class AuthProvider with ChangeNotifier {
         .collection('TaiKhoanNguoiDung')
         .doc(_auth.currentUser!.uid)
         .get();
-    if (result != null) {
-      snapshot = result;
-      notifyListeners();
-    } else {
-      snapshot = null;
-      notifyListeners();
-    }
+    snapshot = result;
+    notifyListeners();
     return result;
   }
 }
